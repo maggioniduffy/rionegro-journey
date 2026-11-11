@@ -1,0 +1,6 @@
+pytest
+numpy
+rasterio
+shapely
+pyproj
+pyogrio
