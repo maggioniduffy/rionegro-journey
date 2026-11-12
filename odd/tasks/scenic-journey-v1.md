@@ -7,8 +7,8 @@ Browser game: an inflatable raft drifts the real route Río Aluminé → Collón
 | Phase | File | Tasks | Status |
 |---|---|---|---|
 | 1 Data and scaffold | `scenic-journey-v1/phase-1-data.md` | T1–T3 | done (archive) |
-| 2 Playable Aluminé slice | `scenic-journey-v1/phase-2-slice.md` | T4 | **active** |
-| 3 Look and HUD | `scenic-journey-v1/phase-3-look-hud.md` | T5, T6 | pending |
+| 2 Playable Aluminé slice | `scenic-journey-v1/phase-2-slice.md` | T4 | done (`20bb918`) |
+| 3 Look and HUD | `scenic-journey-v1/phase-3-look-hud.md` | T5, T6 | **active** |
 | 4 Whole route and release | `scenic-journey-v1/phase-4-route-release.md` | T7, T8 | pending |
 
 ## Standing rules (all phases)
