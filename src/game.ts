@@ -1,10 +1,5 @@
 /** Wires the pure game state (drift, steering, chunks) to the Three.js scene. */
 import {
-  AmbientLight,
-  Color,
-  DirectionalLight,
-  Fog,
-  HemisphereLight,
   PerspectiveCamera,
   Scene,
   Vector3,
@@ -12,6 +7,7 @@ import {
 } from 'three';
 import { driftConfig, startDrift, stepDrift, type DriftState } from './drift';
 import { SteerInput } from './input';
+import { setupLook } from './look';
 import { loadWorld } from './loader';
 import { createRaft } from './raft';
 import type { LateralLimits } from './limits';
@@ -22,7 +18,6 @@ import { clampPixelRatio, computeAspect } from './viewport';
 import { toWorld, worldYawAt } from './world';
 import { waterLevelAt } from './terrain';
 
-const SKY = new Color(0xa9d6ef);
 const AHEAD_M = 650;
 const BEHIND_M = 150;
 
@@ -43,13 +38,7 @@ export async function startGame(startS: number): Promise<DebugState> {
   let steer: SteerState = { d: 0, v: 0 };
 
   const scene = new Scene();
-  scene.background = SKY;
-  scene.fog = new Fog(SKY, 250, 900);
-  scene.add(new HemisphereLight(0xdcefff, 0x56633f, 0.9));
-  scene.add(new AmbientLight(0xffffff, 0.25));
-  const sun = new DirectionalLight(0xfff1d6, 2.2);
-  sun.position.set(-200, 400, 150);
-  scene.add(sun);
+  const sky = setupLook(scene);
 
   const terrain = new TerrainScene(route, manifest, strip, maxStation, { aheadM: AHEAD_M, behindM: BEHIND_M });
   scene.add(terrain.group);
@@ -94,7 +83,7 @@ export async function startGame(startS: number): Promise<DebugState> {
       if (drift.ended) ui.showEnd(true);
     }
     const s = drift.s;
-    terrain.update(s);
+    terrain.update(s, now / 1000);
 
     const level = waterLevelAt(manifest, s);
     const p = toWorld(route, s, steer.d, level + 0.15 + Math.sin(now / 700) * 0.06);
@@ -110,6 +99,7 @@ export async function startGame(startS: number): Promise<DebugState> {
     camLook.lerp(lookGoal.set(look.x, look.y, look.z), k);
     camera.position.copy(camPos);
     camera.lookAt(camLook);
+    sky.update(camera);
     renderer.render(scene, camera);
   };
   renderer.setAnimationLoop(frame);
