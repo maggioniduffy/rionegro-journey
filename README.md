@@ -22,7 +22,7 @@ The build uses a relative base, so `dist/` runs from any plain file server and c
 
 `pnpm dev` (or any static server on `dist/`) opens the raft drifting down the Aluminé stretch at 18 game m/s. Steer with A/D or the arrow keys (left/right half of the screen on touch); R restarts after the end-of-slice message. Debug: `?s=1800` starts at route distance 1800 m, and `window.__rio` exposes `{ s, d, ended, chunkCount }`.
 
-Module layout: pure logic in `world.ts` (route space to world; x east, -z north, y height), `drift.ts`, `steering.ts`, `chunks.ts` (mesh chunk window) and `terrainMesh.ts` (vertex arrays); Three.js code in `terrainScene.ts`, `raft.ts`, `game.ts`, `input.ts`, `ui.ts`.
+Module layout: pure logic in `world.ts` (route space to world; x east, -z north, y height), `drift.ts`, `steering.ts`, `limits.ts` (per-station left/right water limits from the terrain strip, used to clamp steering), `chunks.ts` (mesh chunk window) and `terrainMesh.ts` (vertex arrays); Three.js code in `terrainScene.ts`, `raft.ts`, `game.ts`, `input.ts`, `ui.ts`.
 
 ## Data pipeline
 

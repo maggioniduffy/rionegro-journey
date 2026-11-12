@@ -14,7 +14,8 @@ import { driftConfig, startDrift, stepDrift, type DriftState } from './drift';
 import { SteerInput } from './input';
 import { loadWorld } from './loader';
 import { createRaft } from './raft';
-import { channelLimit, stepSteer, type SteerState } from './steering';
+import type { LateralLimits } from './limits';
+import { stepSteerBetween, type SteerState } from './steering';
 import { TerrainScene } from './terrainScene';
 import { createUi } from './ui';
 import { clampPixelRatio, computeAspect } from './viewport';
@@ -34,7 +35,8 @@ export interface DebugState {
 
 export async function startGame(startS: number): Promise<DebugState> {
   const world = await loadWorld(AHEAD_M);
-  const { route, manifest, strip, maxStation } = world;
+  const { route, manifest, strip, maxStation, limits } = world;
+  const bounds: LateralLimits = { left: 0, right: 0 };
 
   const cfg = driftConfig(route, { startS });
   let drift: DriftState = startDrift(cfg);
@@ -87,7 +89,8 @@ export async function startGame(startS: number): Promise<DebugState> {
     last = now;
     if (!drift.ended) {
       drift = stepDrift(drift, cfg, dt);
-      steer = stepSteer(steer, input.axis, dt, channelLimit(route, drift.s));
+      limits.at(drift.s, bounds);
+      steer = stepSteerBetween(steer, input.axis, dt, -bounds.right, bounds.left);
       if (drift.ended) ui.showEnd(true);
     }
     const s = drift.s;
